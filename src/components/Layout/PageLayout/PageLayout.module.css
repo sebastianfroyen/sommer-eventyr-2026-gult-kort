@@ -1,0 +1,5 @@
+.container {
+  background-size: cover;
+  display: flex;
+  height: 100vh;
+}
