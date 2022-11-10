@@ -48,6 +48,10 @@ Du skal nå ha appen kjørende på http://localhost:3000.
 
 Opprett en bruker med API-et og angi brukernavnet i URL-en for å bekrefte at innlogging fungerer, eks http://localhost:3000?username=adrian
 
+### Hva gjør `vercel.json` filen?
+
+Denne filen sørger for at routing fungerer som det skal i applikasjonen ved deploy til Vercel. Den vil route alle requests (utenom de som går til API-et) til `index.html` slik at routeren i React kan gjøre det den skal, og sende brukeren til riktig sted. Uten denne vil du potensielt oppleve 404-feil ved direktelinking til undersider i applikasjonen din. Den vedlagte `vercel.json` filen skal fungere ut av boksen, men det er kjekt å være klar over virkemåten her under utvikling og deploy.
+
 ## Start lokal utvikling uten brukernavnsjekk
 
 Dersom du ønsker å omgå brukernavnsjekk ved lokal utvikling kan du starte applikasjonen med kommandoen `dev:noauth` for å deaktivere sjekk.
