@@ -48,9 +48,17 @@ Du skal nå ha appen kjørende på http://localhost:3000.
 
 Opprett en bruker med API-et og angi brukernavnet i URL-en for å bekrefte at innlogging fungerer, eks http://localhost:3000?username=adrian
 
-### Hva gjør `vercel.json` filen?
+### OBS! Merk dette angående `config/vercel.json`?
 
-Denne filen sørger for at routing fungerer som det skal i applikasjonen ved deploy til Vercel. Den vil route alle requests (utenom de som går til API-et) til `index.html` slik at routeren i React kan gjøre det den skal, og sende brukeren til riktig sted. Uten denne vil du potensielt oppleve 404-feil ved direktelinking til undersider i applikasjonen din. Den vedlagte `vercel.json` filen skal fungere ut av boksen, men det er kjekt å være klar over virkemåten her under utvikling og deploy.
+I katalogen `config` ligger filen `vercel.json`.
+
+Denne sørger for at den typiske SPA-routingen fungerer som den skal i applikasjonen ved deploy til Vercel. Den vil route alle requests (utenom de som går til API-et) til `index.html` slik at routeren i React kan gjøre det den skal, og sende brukeren til riktig sted. Uten denne vil du oppleve 404-feil ved direktelinking til undersider i applikasjonen din når den kjører på Vercel.
+
+Samtidig kan denne filen skape trøbbel dersom den finnes på rotnivå under utvikling med vercel sin dev-server (bruk av `vercel:dev` kommandoen). Den vil overstyre forespørsler etter ressurser under utvikling, og lede til frustrasjon når man brått får 404-feil på requests mot dev-serveren.
+
+**I prosjektet her er dette løst ved hjelp av pre- og post-hooks på de ulike scriptene, som vil legge til og fjerne filen fra rotkatalogen når de kjøres. Spesifikt vil `predeploy` og `prebuild` kopiere den ut i rotkatalogen, mens `prevercel:dev` vil slette den fra rot. Dette er gjort slik for å minske mengden manuelt arbeid underveis, og for å minske sjansen for at man glemmer å kopiere den ut når man raskt må cowboydeploye før eventyrstart.**
+
+Den vedlagte `vercel.json` filen skal ellers fungere fint ut av boksen, men det er kjekt å være klar over virkemåten som beskrevet over under utvikling og deploy.
 
 ## Start lokal utvikling uten brukernavnsjekk
 

@@ -3,10 +3,13 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "prebuild": "shx cp ./config/vercel.json vercel.json",
     "build": "tsc && vite build",
+    "predeploy": "shx cp ./config/vercel.json vercel.json",
     "deploy": "vercel",
     "dev": "vite",
     "dev:noauth": "cross-env VITE_NO_AUTH=1 vite",
+    "prevercel:dev": "shx rm -f vercel.json",
     "vercel:dev": "vercel dev",
     "vercel:login": "vercel login"
   },
@@ -25,6 +28,7 @@
     "@vercel/node": "^2.5.26",
     "@vitejs/plugin-react": "^2.2.0",
     "cross-env": "^7.0.3",
+    "shx": "^0.3.4",
     "typescript": "^4.8.4",
     "vite": "^3.2.0"
   }
