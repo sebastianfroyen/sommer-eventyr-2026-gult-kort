@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { APP_NUMBER, SHARED_API_KEY } from "./_config";
-import { checkUsernameIsValid, updateSublevel } from "./_helpers";
+import { APP_NUMBER, SHARED_API_KEY } from "./_config.js";
+import { getUserFromEventyrApi, isProgressRegistered, updateSublevel } from "./_helpers.js";
 
 /**
  * IMPORTANT: Environment variables must be configured for project on:
@@ -28,20 +28,31 @@ export default async function handler(
       .send(`Authentication failed. Missing required environment variables.`);
   }
 
-  const usernameResponse = await checkUsernameIsValid(username);
-
-  /*
-   * Register initial progress.
-   */
-  const sublevelResponse = await updateSublevel(0, username);
+  const usernameResponse = await getUserFromEventyrApi(username);
 
   /**
-   * Only return 200 response if both username check and
-   * progress-registration were successful.
+   * Only move on if username check was successful.
    */
-  if (usernameResponse.status === 200 && sublevelResponse.status === 200) {
-    response.status(200).send(`Authentication successful.`);
+  if (usernameResponse.status === 200) {
+    const { data } = usernameResponse;
+
+    /* Happy path - everything checks out OK. */
+    if (isProgressRegistered(data)) {
+      return response.status(200).send(`Authentication successful.`);
+    } else {
+      /* Register progress using app number. */
+      const progressRequest = await updateSublevel(0, username);
+
+      /* Registration OK - allow user to proceed. */
+      if (progressRequest.status === 200) {
+        return response.status(200).send(`Authentication successful.`);
+      }
+
+      /* Registration failed - block user from proceeding. */
+      return response.status(401).send(`Authentication failed.`);
+    }
   } else {
-    response.status(401).send(`Authentication failed.`);
+    /* Username not found - block user from proceeding. */
+    return response.status(401).send(`Authentication failed.`);
   }
 }

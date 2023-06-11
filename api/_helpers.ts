@@ -1,7 +1,22 @@
 import axios, { AxiosResponse } from "axios";
-import { APP_NUMBER, SHARED_API_KEY, SHARED_API_URL } from "./_config";
+import { APP_NUMBER, SHARED_API_KEY, SHARED_API_URL } from "./_config.js";
 
-export async function checkUsernameIsValid(
+export interface AppTracking {
+  _id: string,
+  appNumber: number,
+  subLevelsCompleted: number,
+}
+
+export interface EventyrAPIResponse {
+  currentApp: number,
+  currentSubLevel: number,
+  _id: string,
+  username: string,
+  userCreatedAt: string,
+  appTracking: AppTracking[],
+}
+
+export async function getUserFromEventyrApi(
   username: string | string[]
 ): Promise<AxiosResponse> {
   return axios({
@@ -35,4 +50,14 @@ export async function updateSublevel(
       username,
     },
   });
+}
+
+export function isProgressRegistered(apiResponse: EventyrAPIResponse) {
+  if (apiResponse && apiResponse.appTracking) {
+    const { appTracking } = apiResponse;
+
+    return appTracking.some((app) => app.appNumber === parseInt(APP_NUMBER as string));
+  }
+
+  throw Error("User not found in database.")
 }
