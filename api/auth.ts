@@ -33,8 +33,8 @@ export default async function handler(
   /**
    * Only move on if username check was successful.
    */
-  if (usernameResponse.status === 200) {
-    const { data } = usernameResponse;
+  if (usernameResponse) {
+    const data = usernameResponse;
 
     /* Happy path - everything checks out OK. */
     if (isProgressRegistered(data)) {
@@ -44,7 +44,7 @@ export default async function handler(
       const progressRequest = await updateSublevel(0, username);
 
       /* Registration OK - allow user to proceed. */
-      if (progressRequest.status === 200) {
+      if (progressRequest === 'Ok') {
         return response.status(200).send(`Authentication successful.`);
       }
 

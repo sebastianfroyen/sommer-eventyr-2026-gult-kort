@@ -1,58 +1,78 @@
-import axios, { AxiosResponse } from "axios";
-import { APP_NUMBER, SHARED_API_KEY, SHARED_API_URL } from "./_config.js";
+import { gql } from "graphql-request";
+import { APP_NUMBER, graphQLClient } from "./_config.js";
 
-export interface AppTracking {
-  _id: string,
-  appNumber: number,
-  subLevelsCompleted: number,
+type AppTracking = {
+  id: string;
+  appNumber: number;
+  subLevelsCompleted: number;
 }
 
-export interface EventyrAPIResponse {
-  currentApp: number,
-  currentSubLevel: number,
-  _id: string,
-  username: string,
-  userCreatedAt: string,
-  appTracking: AppTracking[],
+type User = {
+  id: string;
+  username: string;
+  currentApp: number;
+  currentSubLevel: number;
+  appTracking: AppTracking[];
+  userCreatedAt: string;
 }
 
-export async function getUserFromEventyrApi(
+type UpdateUser = {
+  message: string;
+}
+
+export const getUserFromEventyrApi = async (
   username: string | string[]
-): Promise<AxiosResponse> {
-  return axios({
-    method: "GET",
-    url: `${SHARED_API_URL}/user/${username}`,
-    headers: {
-      "x-api-key": SHARED_API_KEY,
-      "Content-Type": "application/json",
-    },
-  });
-}
+): Promise<User> => {
+  const response = await graphQLClient.request<{ getUser: User }>(
+    gql`
+      query GetUser($username: String) {
+        getUser(username: $username) {
+          id
+          username
+          currentApp
+          currentSubLevel
+          appTracking {
+            id
+            appNumber
+            subLevelsCompleted
+          }
+          userCreatedAt
+        }
+      }
+    `,
+    {
+      username: username
+    }
+  );
 
-export async function updateSublevel(
+  return response.getUser;
+};
+
+export const updateSublevel = async (
   subLevel: number,
   username: string | string[]
-): Promise<AxiosResponse> {
-  if (APP_NUMBER === undefined || SHARED_API_KEY === undefined) {
-    throw Error("Missing required environment variables");
-  }
+): Promise<string> => {
+  const response = await graphQLClient.request<{ updateUser: UpdateUser }>(
+    gql`
+      mutation UpdateUser($updateUserInput: UpdateUserInput) {
+        updateUser(updateUserInput: $updateUserInput) {
+          message
+        }
+      }
+    `,
+    {
+      updateUserInput: {
+        username: username,
+        subLevel: subLevel,
+        appNumber: parseInt(APP_NUMBER as string)
+      }
+    }
+  );
 
-  return axios({
-    method: "PUT",
-    url: `${SHARED_API_URL}/progress/nextstep`,
-    headers: {
-      "x-api-key": SHARED_API_KEY || "",
-      "Content-Type": "application/json",
-    },
-    data: {
-      appNumber: APP_NUMBER,
-      subLevel,
-      username,
-    },
-  });
-}
+  return response.updateUser.message;
+};
 
-export function isProgressRegistered(apiResponse: EventyrAPIResponse) {
+export function isProgressRegistered(apiResponse: User) {
   if (apiResponse && apiResponse.appTracking) {
     const { appTracking } = apiResponse;
 
