@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useUsername } from "@/hooks/useUsername";
 
 import { requestAuthenticateUsername } from "@/api/auth";
@@ -6,11 +6,10 @@ import { requestAuthenticateUsername } from "@/api/auth";
 export const useAuthentication = () => {
   const { username } = useUsername();
 
-  const { isLoading: loading, isSuccess: authenticated } = useQuery(
-    `authenticate${username}`,
-    () => requestAuthenticateUsername(username),
-    { enabled: !!username, retry: false, refetchOnWindowFocus: false }
-  );
+  const { isLoading: loading, isSuccess: authenticated } = useQuery({
+    queryKey: [`authenticate${username}`],
+    queryFn: () => requestAuthenticateUsername(username),
+    enabled: !!username, retry: false, refetchOnWindowFocus: false });
 
   return { authenticated, loading };
 };

@@ -2,9 +2,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import * as path from "path";
 
-const isUsingVercel = process.env.VERCEL === "1";
+const usingVercel = process.env.VERCEL === "1";
 
-if (!isUsingVercel) {
+if (!usingVercel) {
   console.log(
     "\x1b[33m",
     "OBS! Applikasjonen kjører uten Vercel miljø aktivert. Brukernavnsjekk og API-kall vil ikke fungere",
