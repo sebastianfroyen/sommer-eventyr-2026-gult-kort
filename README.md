@@ -19,7 +19,6 @@ Prosjektet benytter seg av følgende biblioteker/teknologier:
 - React 18
 - React Router
 - React Query
-- Axios
 
 ## Kom i gang
 

@@ -1,6 +1,7 @@
-import axios from "axios";
+export async function requestAuthenticateUsername(
+  brukernavn?: string | null
+): Promise<boolean> {
+  const { status } = await fetch(`/api/auth?username=${brukernavn}`);
 
-export async function requestAuthenticateUsername(brukernavn?: string | null) {
-  const { data } = await axios.get<string>(`/api/auth?username=${brukernavn}`);
-  return data;
+  return status === 200;
 }

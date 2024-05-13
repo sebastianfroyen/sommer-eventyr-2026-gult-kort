@@ -43,7 +43,9 @@ export const getUserFromEventyrApi = async (
     {
       username: username
     }
-  );
+  ).catch(() => {
+    throw Error("User not found in database.");
+  });
 
   return response.getUser;
 };
