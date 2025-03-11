@@ -83,3 +83,17 @@ export function isProgressRegistered(apiResponse: User) {
 
   throw Error("User not found in database.")
 }
+
+export function getRuntimeUrl(request: Request) {
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:3000";
+  } else {
+    const hostname = request.headers.get('hostname');
+
+    if (hostname) {
+      return `https://${hostname}`;
+    } else {
+      throw Error("Missing hostname in request headers.");
+    }
+  }
+}
