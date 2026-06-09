@@ -10,7 +10,7 @@ export type GamePhase =
 
 export const TACKLE_MESSAGES = [
   "😤 Motspilleren smeller til Haaland igjen!",
-  "💥 BRAK! Haaland på bakken — IGJEN!",
+  "💥 BRAK! Haaland på baken 🍑 — IGJEN!",
   "😡 Motspilleren respekterer ingenting!",
   "🤕 Haaland slår seg for femte gang...",
   "🔥 Dommeren er maktesløs — kortet er borte!",

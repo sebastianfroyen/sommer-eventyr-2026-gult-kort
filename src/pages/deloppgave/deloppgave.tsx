@@ -5,6 +5,7 @@ import CardFlash from "../../components/CardFlash/CardFlash";
 import VictoryScreen from "../../components/VictoryScreen/VictoryScreen";
 import CameraScreen from "../../components/CameraScreen/CameraScreen";
 import GameScreen from "../../components/GameScreen/GameScreen";
+import TackleAnimation from "@/components/TackleAnimation";
 
 const Deloppgave: React.FC = () => {
   const [phase, setPhase] = useState<GamePhase>("playing");
@@ -38,15 +39,27 @@ const Deloppgave: React.FC = () => {
     }
   }, [phase]);
 
-  if (phase === "flash-yellow-1" || phase === "flash-yellow-2" || phase === "flash-red") {
-    return <CardFlash phase={phase} />;
+  if (
+    phase === "flash-yellow-1" ||
+    phase === "flash-yellow-2" ||
+    phase === "flash-red"
+  ) {
+    return (
+      <>
+        <CardFlash phase={phase} />
+      </>
+    );
   }
 
   if (phase === "victory") {
     return <VictoryScreen />;
   }
 
-  if (phase === "waiting-yellow-1" || phase === "waiting-yellow-2" || phase === "waiting-red") {
+  if (
+    phase === "waiting-yellow-1" ||
+    phase === "waiting-yellow-2" ||
+    phase === "waiting-red"
+  ) {
     return <CameraScreen phase={phase} onAdvance={setPhase} />;
   }
 

@@ -1,4 +1,5 @@
 import { GamePhase, TACKLE_MESSAGES } from "../../pages/deloppgave/gameConstants";
+import TackleAnimation from "../TackleAnimation";
 
 interface GameScreenProps {
   tackleIndex: number;
@@ -12,6 +13,8 @@ const GameScreen: React.FC<GameScreenProps> = ({ tackleIndex, shaking, onStart }
       <span>⚽ KAMP I GANG</span>
       <span className="card-counter">🟡🟡 → 🟥</span>
     </div>
+        <TackleAnimation />
+
 
     <div className={`pitch-scene ${shaking ? "shake" : ""}`}>
       <div className="pitch-text">
