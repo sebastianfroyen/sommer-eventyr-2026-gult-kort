@@ -1,0 +1,483 @@
+/* ── Layout ── */
+* {
+  box-sizing: border-box;
+}
+
+.game-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(180deg, #1a6b2e 0%, #228b3c 40%, #1a5c27 100%);
+  padding: 0 16px 32px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #fff;
+}
+
+/* ── Scoreboard ── */
+.scoreboard {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 12px 12px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.card-counter {
+  font-size: 1.2rem;
+}
+
+/* ── Pitch scene ── */
+.pitch-scene {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 20px 16px;
+  text-align: center;
+  margin-bottom: 24px;
+  transition: transform 0.1s ease;
+}
+
+.pitch-scene.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-8px) rotate(-1deg); }
+  40%  { transform: translateX(8px) rotate(1deg); }
+  60%  { transform: translateX(-6px); }
+  80%  { transform: translateX(6px); }
+  100% { transform: translateX(0); }
+}
+
+.pitch-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.haaland {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.villain {
+  background: rgba(255, 50, 50, 0.3);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.vs-arrow {
+  font-size: 1.4rem;
+}
+
+.tackle-msg {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+  min-height: 1.5em;
+  transition: opacity 0.3s;
+}
+
+.ref-msg {
+  font-size: 0.85rem;
+  opacity: 0.75;
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Instructions ── */
+.card-instructions {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.card-instructions p {
+  margin: 4px 0;
+  font-size: 1rem;
+}
+
+.instruction-detail {
+  font-size: 0.9rem !important;
+  opacity: 0.85;
+}
+
+.er-jeg-bare-en-fantasi {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+}
+
+/* ── Camera detection screen ── */
+.camera-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 40px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #fff;
+}
+
+.camera-screen--yellow {
+  background: linear-gradient(180deg, #7a5e00 0%, #5a4200 100%);
+}
+
+.camera-screen--red {
+  background: linear-gradient(180deg, #7a0000 0%, #4a0000 100%);
+}
+
+.cam-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+  margin: 0 0 4px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.cam-step {
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 20px;
+}
+
+.cam-preview-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #000;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+}
+
+.cam-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* mirror for selfie camera */
+}
+
+.cam-detected-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 900;
+  background: rgba(0, 200, 80, 0.35);
+  backdrop-filter: blur(2px);
+  animation: flashIn 0.15s ease;
+}
+
+.cam-error {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ffdddd;
+  background: #330000;
+}
+
+.cam-bar-track {
+  width: 100%;
+  max-width: 480px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.cam-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.1s ease;
+}
+
+.bar-yellow {
+  background: #f5c518;
+}
+
+.bar-red {
+  background: #e02020;
+}
+
+.cam-hint {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  text-align: center;
+  margin: 0;
+}
+
+.cam-top-bar {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.cam-countdown {
+  font-size: 1.6rem;
+  font-weight: 900;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  padding: 4px 14px;
+  letter-spacing: 0.04em;
+  transition: color 0.3s, background 0.3s;
+}
+
+.cam-countdown--urgent {
+  color: #ff4444;
+  background: rgba(0, 0, 0, 0.55);
+  animation: urgentPulse 0.5s ease infinite alternate;
+}
+
+@keyframes urgentPulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+
+.cam-fail-banner {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(200, 0, 0, 0.85);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  animation: flashIn 0.2s ease;
+}
+
+/* Moving target box */
+.cam-target-box {
+  position: absolute;
+  width: 28%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  pointer-events: none;
+  transition: box-shadow 0.1s ease;
+}
+
+.cam-target-box--yellow {
+  border: 3px solid #f5c518;
+  box-shadow: 0 0 10px rgba(245, 197, 24, 0.6);
+}
+
+.cam-target-box--red {
+  border: 3px solid #e02020;
+  box-shadow: 0 0 10px rgba(224, 32, 32, 0.6);
+}
+
+.cam-target-box--hit.cam-target-box--yellow {
+  border-color: #00e060;
+  box-shadow: 0 0 20px rgba(0, 224, 96, 0.9);
+  animation: targetHit 0.3s ease;
+}
+
+.cam-target-box--hit.cam-target-box--red {
+  border-color: #00e060;
+  box-shadow: 0 0 20px rgba(0, 224, 96, 0.9);
+  animation: targetHit 0.3s ease;
+}
+
+@keyframes targetHit {
+  0%   { transform: translate(-50%, -50%) scale(1); }
+  50%  { transform: translate(-50%, -50%) scale(1.15); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ── Card button ── */
+.card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: min-content;
+  max-width: 320px;
+  padding: 0;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.yellow-btn {
+  background: #f5c518;
+  color: #222;
+}
+
+.btn-card-icon {
+  width: min-content;
+  height: min-content;
+}
+
+/* ── Full-screen card flash ── */
+.card-flash {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  animation: flashIn 0.2s ease;
+}
+
+@keyframes flashIn {
+  from { opacity: 0; transform: scale(1.1); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.yellow-flash {
+  background: #f5c518;
+  color: #222;
+}
+
+.red-flash {
+  background: #e02020;
+  color: #fff;
+  cursor: pointer;
+}
+
+.card-visual {
+  width: 120px;
+  height: 170px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  animation: cardPop 0.3s ease;
+}
+
+@keyframes cardPop {
+  0%   { transform: scale(0) rotate(-15deg); }
+  70%  { transform: scale(1.1) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.yellow-card {
+  background: #f5c518;
+  border: 4px solid #c9a000;
+}
+
+.red-card {
+  background: #e02020;
+  border: 4px solid #a00000;
+}
+
+.card-label {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.card-sublabel {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.8;
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Victory ── */
+.victory-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a6b2e 0%, #0d3d1a 100%);
+  color: #fff;
+  text-align: center;
+  padding: 32px 16px;
+  animation: flashIn 0.4s ease;
+}
+
+.victory-emoji {
+  font-size: 5rem;
+  animation: bounce 0.6s ease infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-16px); }
+}
+
+.victory-screen h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin: 16px 0 8px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.victory-sub {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0 0 32px;
+}
+
+.confetti-row {
+  display: flex;
+  gap: 4px;
+  font-size: 1.8rem;
+}
+
+.confetti-row span {
+  display: inline-block;
+  animation: confettiBounce 0.5s ease infinite alternate;
+}
+
+@keyframes confettiBounce {
+  from { transform: translateY(0) rotate(0deg); }
+  to   { transform: translateY(-10px) rotate(15deg); }
+}
