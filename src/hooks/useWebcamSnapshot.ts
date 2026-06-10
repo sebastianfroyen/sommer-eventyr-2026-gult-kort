@@ -12,6 +12,10 @@ interface UseWebcamSnapshotOptions {
    * grabbing the frame. Defaults to 0 (immediate).
    */
   delayMs?: number;
+  /**
+   * Called with the captured data URL after the image is stored.
+   */
+  onCapture?: (dataUrl: string) => void;
 }
 
 /**
@@ -27,7 +31,7 @@ export function useWebcamSnapshot(
   storageKey: string,
   options?: UseWebcamSnapshotOptions
 ) {
-  const { maxCount, delayMs = 0 } = options ?? {};
+  const { maxCount, delayMs = 0, onCapture } = options ?? {};
 
   const captureSnapshot = useCallback(() => {
     setTimeout(() => {
@@ -51,8 +55,10 @@ export function useWebcamSnapshot(
       } catch {
         // Storage quota exceeded or unavailable — silently ignore
       }
+
+      onCapture?.(dataUrl);
     }, delayMs);
-  }, [videoRef, storageKey, maxCount, delayMs]);
+  }, [videoRef, storageKey, maxCount, delayMs, onCapture]);
 
   return captureSnapshot;
 }

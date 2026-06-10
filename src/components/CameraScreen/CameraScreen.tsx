@@ -56,6 +56,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
   const [targetPos, setTargetPos] = useState({ x: 0.5, y: 0.5 });
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const [showFailed, setShowFailed] = useState(false);
+  const [failImage, setFailImage] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -72,7 +73,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { targetPosRef.current = targetPos; }, [targetPos]);
 
-  const captureFailSnapshot = useWebcamSnapshot(videoRef, "red-card-fail-snapshot", { delayMs: 500 });
+  const captureFailSnapshot = useWebcamSnapshot(videoRef, "red-card-fail-snapshot", { delayMs: 500, onCapture: setFailImage });
   const captureSuccessSnapshot = useWebcamSnapshot(videoRef, "phase-success-snapshots", { maxCount: 3, delayMs: 500 });
   const captureRedClearSnapshot = useWebcamSnapshot(videoRef, "red-card-clear-snapshot", { delayMs: 500 });
 
@@ -196,6 +197,18 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
       </h2>
 
       {showFailed && <div className="cam-fail-banner">⏱ For sent! Prøv igjen…</div>}
+
+      {failImage && (
+        <div className="cam-fail-dialog-backdrop" onClick={() => setFailImage(null)}>
+          <div className="cam-fail-dialog" onClick={(e) => e.stopPropagation()}>
+            <p className="cam-fail-dialog-title">📸 Slik så du ut da du bommet!</p>
+            <img src={failImage} alt="Feilbilde" className="cam-fail-dialog-img" />
+            <button className="cam-fail-dialog-close" onClick={() => setFailImage(null)}>
+              Prøv igjen 💪
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="cam-preview-wrap">
         {camError ? (
