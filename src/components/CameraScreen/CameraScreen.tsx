@@ -201,7 +201,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
       {failImage && (
         <div className="cam-fail-dialog-backdrop" onClick={() => setFailImage(null)}>
           <div className="cam-fail-dialog" onClick={(e) => e.stopPropagation()}>
-            <p className="cam-fail-dialog-title">📸 Slik så du ut da du bommet!</p>
+            <p className="cam-fail-dialog-title">Slik så du ut da du bommet 🫵👆</p>
             <img src={failImage} alt="Feilbilde" className="cam-fail-dialog-img" />
             <button className="cam-fail-dialog-close" onClick={() => setFailImage(null)}>
               Prøv igjen 💪
@@ -233,6 +233,31 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
       <p className="cam-hint">
         {detected ? "✅ Hold stille…" : isRed ? "Hold rød skjerm inne i den bevegelige boksen" : "Hold gul skjerm inne i den bevegelige boksen"}
       </p>
+
+      {/* DEBUG BUTTON — remove before production */}
+      <button
+        onClick={() => {
+          if (phase === "waiting-yellow-1") onAdvance("flash-yellow-1");
+          else if (phase === "waiting-yellow-2") onAdvance("flash-yellow-2");
+          else if (phase === "waiting-red") onAdvance("flash-red");
+        }}
+        style={{
+          position: "fixed",
+          bottom: 12,
+          right: 12,
+          zIndex: 9999,
+          background: "rgba(0,0,0,0.6)",
+          color: "#ff0",
+          border: "1px solid #ff0",
+          borderRadius: 6,
+          padding: "4px 10px",
+          fontSize: 11,
+          cursor: "pointer",
+          opacity: 0.6,
+        }}
+      >
+        ⏭ DEBUG: neste fase
+      </button>
     </div>
   );
 };
