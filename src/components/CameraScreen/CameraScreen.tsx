@@ -1,4 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from "react";
+import { useWebcamSnapshot } from "../../hooks/useWebcamSnapshot";
 import {
   GamePhase,
   DETECTION_THRESHOLD,
@@ -71,6 +72,10 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
   useEffect(() => { phaseRef.current = phase; }, [phase]);
   useEffect(() => { targetPosRef.current = targetPos; }, [targetPos]);
 
+  const captureFailSnapshot = useWebcamSnapshot(videoRef, "red-card-fail-snapshot", { delayMs: 500 });
+  const captureSuccessSnapshot = useWebcamSnapshot(videoRef, "phase-success-snapshots", { maxCount: 3, delayMs: 500 });
+  const captureRedClearSnapshot = useWebcamSnapshot(videoRef, "red-card-clear-snapshot", { delayMs: 500 });
+
   const stopDetection = useCallback(() => {
     if (detectionIntervalRef.current) { clearInterval(detectionIntervalRef.current); detectionIntervalRef.current = null; }
     if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
@@ -109,6 +114,7 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
       setCountdown((prev) => {
         if (prev <= 1) {
           if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
+          if (phaseRef.current === "waiting-red") captureFailSnapshot();
           setShowFailed(true);
           setTimeout(() => setShowFailed(false), 1600);
           return COUNTDOWN_SECONDS;
@@ -134,17 +140,18 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance }) => {
         if (!holdTimerRef.current) {
           holdTimerRef.current = setTimeout(() => {
             holdTimerRef.current = null;
+            captureSuccessSnapshot();
             const p = phaseRef.current;
             if (p === "waiting-yellow-1") onAdvance("flash-yellow-1");
             else if (p === "waiting-yellow-2") onAdvance("flash-yellow-2");
-            else if (p === "waiting-red") onAdvance("flash-red");
+            else if (p === "waiting-red") { captureRedClearSnapshot(); onAdvance("flash-red"); }
           }, HOLD_DURATION);
         }
       } else {
         if (holdTimerRef.current) { clearTimeout(holdTimerRef.current); holdTimerRef.current = null; }
       }
     }, 150);
-  }, [stopDetection, onAdvance]);
+  }, [stopDetection, onAdvance, captureFailSnapshot, captureSuccessSnapshot, captureRedClearSnapshot]);
 
   const startCamera = useCallback(async () => {
     if (streamRef.current) { startDetectionLoop(); return; }
