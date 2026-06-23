@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface VictoryScreenProps {
   recordingUrl?: string | null;
@@ -6,6 +6,15 @@ interface VictoryScreenProps {
 
 const VictoryScreen: React.FC<VictoryScreenProps> = ({ recordingUrl: recordingUrlProp }) => {
   const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const usernameParam = params.get("username")?.trim();
+    if (usernameParam) {
+      setUsername(usernameParam);
+    }
+  }, []);
 
   useEffect(() => {
     if (recordingUrlProp) {
@@ -24,6 +33,11 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ recordingUrl: recordingUr
     const timeout = setTimeout(() => clearInterval(interval), 10000);
     return () => { clearInterval(interval); clearTimeout(timeout); };
   }, [recordingUrlProp]);
+
+  const continueUrl = useMemo(() => {
+    const baseUrl = "https://sommereventyr-2026-lost-captain.vercel.app/";
+    return username ? `${baseUrl}?username=${encodeURIComponent(username)}` : baseUrl;
+  }, [username]);
 
   return (
     <div className="victory-screen">
@@ -52,7 +66,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ recordingUrl: recordingUr
 
       <a
         className="victory-next-link"
-        href="https://sommereventyr-2026-lost-captain.vercel.app/"
+        href={continueUrl}
         target="_blank"
         rel="noopener noreferrer"
       >
