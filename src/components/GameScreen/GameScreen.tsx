@@ -1,4 +1,4 @@
-import { GamePhase, TACKLE_MESSAGES } from "../../pages/deloppgave/gameConstants";
+import { TACKLE_MESSAGES } from "../../pages/deloppgave/gameConstants";
 import TackleAnimation from "../TackleAnimation";
 
 interface GameScreenProps {
