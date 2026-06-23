@@ -32,10 +32,10 @@ const GameScreen: React.FC<GameScreenProps> = ({ tackleIndex, shaking, onStart }
     </div>
 
     <div className="er-jeg-bare-en-fantasi">
-      <p style={{ display: "none" }} className="instruction-detail">
+      <p className="instruction-detail">
         Vis <strong>2 gule kort</strong> og deretter <strong>1 rødt kort</strong> foran kameraet.
       </p>
-      <p style={{ display: "none" }} className="instruction-detail">
+      <p className="instruction-detail">
         ⚠️ Hold kortet inne i den <strong>bevegelige boksen</strong> — du har kun{" "}
         <strong>10 sekunder</strong> per kort!
       </p>

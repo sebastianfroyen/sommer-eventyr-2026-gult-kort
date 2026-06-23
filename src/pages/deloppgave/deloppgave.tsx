@@ -11,6 +11,7 @@ const Deloppgave: React.FC = () => {
   const [phase, setPhase] = useState<GamePhase>("playing");
   const [tackleIndex, setTackleIndex] = useState(0);
   const [shaking, setShaking] = useState(false);
+  const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
 
   // Tackle animation
   useEffect(() => {
@@ -52,7 +53,7 @@ const Deloppgave: React.FC = () => {
   }
 
   if (phase === "victory") {
-    return <VictoryScreen />;
+    return <VictoryScreen recordingUrl={recordingUrl} />;
   }
 
   if (
@@ -60,7 +61,7 @@ const Deloppgave: React.FC = () => {
     phase === "waiting-yellow-2" ||
     phase === "waiting-red"
   ) {
-    return <CameraScreen phase={phase} onAdvance={setPhase} />;
+    return <CameraScreen phase={phase} onAdvance={setPhase} onCompletionRecorded={setRecordingUrl} />;
   }
 
   return (

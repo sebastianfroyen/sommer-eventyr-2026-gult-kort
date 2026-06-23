@@ -33,10 +33,16 @@ export function useWebcamRecording(
   const isRecordingRef = useRef(false);
 
   const startRecording = useCallback(() => {
-    if (isRecordingRef.current) return;
+    if (isRecordingRef.current) {
+      console.warn("[useWebcamRecording] Already recording, ignoring call");
+      return;
+    }
 
     const video = videoRef.current;
-    if (!video) return;
+    if (!video) {
+      console.error("[useWebcamRecording] videoRef is null");
+      return;
+    }
 
     // Prefer the stream already attached to the video element, fall back to
     // capturing a new stream from the element itself.
@@ -44,36 +50,51 @@ export function useWebcamRecording(
       (video.srcObject instanceof MediaStream ? video.srcObject : null) ??
       ((video as HTMLVideoElement & { captureStream?: () => MediaStream }).captureStream?.() ?? null);
 
-    if (!stream) return;
+    if (!stream) {
+      console.error("[useWebcamRecording] No recordable stream found on video element");
+      return;
+    }
 
     // Pick the best supported MIME type.
     const mimeType = ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4"]
       .find((t) => MediaRecorder.isTypeSupported(t)) ?? "";
 
+    console.log(`[useWebcamRecording] Starting recording (mimeType="${mimeType}", durationMs=${durationMs})`);
+
     let recorder: MediaRecorder;
     try {
       recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-    } catch {
+    } catch (e) {
+      console.error("[useWebcamRecording] MediaRecorder constructor failed:", e);
       return;
     }
+
+    recorder.onerror = (e) => {
+      console.error("[useWebcamRecording] MediaRecorder error:", e);
+    };
 
     isRecordingRef.current = true;
     const chunks: Blob[] = [];
 
     recorder.ondataavailable = (e) => {
+      console.log(`[useWebcamRecording] Data chunk: ${e.data.size} bytes`);
       if (e.data.size > 0) chunks.push(e.data);
     };
 
     recorder.onstop = () => {
+      console.log(`[useWebcamRecording] Recorder stopped, ${chunks.length} chunk(s)`);
       isRecordingRef.current = false;
       const blob = new Blob(chunks, { type: recorder.mimeType || "video/webm" });
+      console.log(`[useWebcamRecording] Blob size: ${blob.size} bytes`);
       const reader = new FileReader();
       reader.onloadend = () => {
         const dataUrl = reader.result as string;
+        console.log(`[useWebcamRecording] dataUrl length: ${dataUrl.length}, saving to localStorage key "${storageKey}"`);
         try {
           localStorage.setItem(storageKey, dataUrl);
-        } catch {
-          // Storage quota exceeded or unavailable — silently ignore
+          console.log("[useWebcamRecording] Saved to localStorage ✓");
+        } catch (e) {
+          console.error("[useWebcamRecording] localStorage.setItem failed:", e);
         }
         onRecorded?.(dataUrl);
       };
@@ -81,7 +102,9 @@ export function useWebcamRecording(
     };
 
     recorder.start();
+    console.log("[useWebcamRecording] recorder.start() called");
     setTimeout(() => {
+      console.log(`[useWebcamRecording] Timeout fired, recorder.state="${recorder.state}"`);
       if (recorder.state !== "inactive") recorder.stop();
     }, durationMs);
   }, [videoRef, storageKey, durationMs, onRecorded]);
