@@ -49,6 +49,15 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({ recordingUrl: recordingUr
           />
         </div>
       )}
+
+      <a
+        className="victory-next-link"
+        href="https://sommereventyr-2026-lost-captain.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Fortsett eventyret her
+      </a>
     </div>
   );
 };
