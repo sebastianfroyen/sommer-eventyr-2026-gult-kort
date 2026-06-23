@@ -13,6 +13,13 @@ const Deloppgave: React.FC = () => {
   const [shaking, setShaking] = useState(false);
   const [recordingUrl, setRecordingUrl] = useState<string | null>(null);
 
+  const resetChallenge = () => {
+    setRecordingUrl(null);
+    setTackleIndex(0);
+    setShaking(false);
+    setPhase("playing");
+  };
+
   // Tackle animation
   useEffect(() => {
     if (phase !== "playing") return;
@@ -61,7 +68,14 @@ const Deloppgave: React.FC = () => {
     phase === "waiting-yellow-2" ||
     phase === "waiting-red"
   ) {
-    return <CameraScreen phase={phase} onAdvance={setPhase} onCompletionRecorded={setRecordingUrl} />;
+    return (
+      <CameraScreen
+        phase={phase}
+        onAdvance={setPhase}
+        onCompletionRecorded={setRecordingUrl}
+        onFailDialogClose={phase === "waiting-red" ? resetChallenge : undefined}
+      />
+    );
   }
 
   return (

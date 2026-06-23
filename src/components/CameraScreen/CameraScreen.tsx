@@ -51,9 +51,10 @@ interface CameraScreenProps {
   phase: WaitingPhase;
   onAdvance: (next: GamePhase) => void;
   onCompletionRecorded?: (dataUrl: string) => void;
+  onFailDialogClose?: () => void;
 }
 
-const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance, onCompletionRecorded }) => {
+const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance, onCompletionRecorded, onFailDialogClose }) => {
   const [confidence, setConfidence] = useState(0);
   const [camError, setCamError] = useState<string | null>(null);
   const [targetPos, setTargetPos] = useState({ x: 0.5, y: 0.5 });
@@ -224,7 +225,13 @@ const CameraScreen: React.FC<CameraScreenProps> = ({ phase, onAdvance, onComplet
       {showFailed && <div className="cam-fail-banner">⏱ For sent! Prøv igjen…</div>}
 
       {failImage && (
-        <FailImageModal failImage={failImage} onClose={() => setFailImage(null)} />
+        <FailImageModal
+          failImage={failImage}
+          onClose={() => {
+            setFailImage(null);
+            onFailDialogClose?.();
+          }}
+        />
       )}
 
       <div className="cam-preview-wrap">
