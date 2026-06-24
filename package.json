@@ -11,7 +11,7 @@
     "dev": "NODE_TLS_REJECT_UNAUTHORIZED='0' vite",
     "dev:noauth": "cross-env VITE_NO_AUTH=1 vite",
     "prevercel:dev": "shx rm -f vercel.json",
-    "vercel:dev": "NODE_TLS_REJECT_UNAUTHORIZED='0' vercel dev",
+    "vercel:dev": "vercel dev",
     "vercel:login": "vercel login"
   },
   "dependencies": {

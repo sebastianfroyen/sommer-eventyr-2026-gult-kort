@@ -27,3 +27,6 @@ dist-ssr
 # SonarQube
 .scannerwork
 .env*
+
+.vercel
+.env*
