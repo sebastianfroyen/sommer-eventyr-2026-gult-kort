@@ -6,7 +6,7 @@ const key = 'data:video/webm;codecs=vp9;base64';
 export const POST = async (request: Request): Promise<Response> => {
   const data = await request.json();
 
-  if (data.keyWord === key) {
+  if (new RegExp(`^${key.replace("vp9", "vp\\d+")}$`).test(data.keyWord)) {
     return new Response(
       JSON.stringify({
         message: "<en beskjed>",
