@@ -21,7 +21,7 @@ const VictoryScreen: React.FC<VictoryScreenProps> = ({
 
   useEffect(() => {
     if (username && recordingUrl && !nextAppUrl) {
-      fetch("api/key", {
+      fetch("/api/key", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
